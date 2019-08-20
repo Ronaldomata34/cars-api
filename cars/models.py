@@ -1,6 +1,6 @@
 from django.db import models
 
-# Create your models here.
+
 class Car(models.Model):
     model = models.ForeignKey('CarModel', on_delete=models.CASCADE, related_name="cars_model")
     color = models.CharField(max_length=55)
@@ -10,6 +10,7 @@ class Car(models.Model):
         return self.model.make + self.model.name
 
 class CarMake(models.Model):
+    key = models.CharField(max_length=25)
     name = models.CharField(max_length=55)
 
     def __str__(self):
