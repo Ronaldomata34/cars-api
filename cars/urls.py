@@ -1,8 +1,9 @@
-from rest_framework import routers
+from django.urls import path, include
 
 from . import views
 
 app_name = 'cars'
-router = routers.SimpleRouter()
-router.register(r'listmakes', views.CarMakeViewSet)
-urlpatterns = router.urls
+
+urlpatterns = [
+    path('makes', views.CarMakeFilterView.as_view()),
+]

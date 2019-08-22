@@ -48,10 +48,12 @@ class CarSpider():
             car.model = ' '.join(data[2:])
             car.zip_code = self.zip_code
             car.save()"""
+import sys
+
 import requests
 from bs4 import BeautifulSoup
 
-from cars.models import CarMake
+from cars.models import CarMake, CarModel
 
 
 class CarMakeSpider():
@@ -70,20 +72,44 @@ class CarMakeSpider():
             options = optgroup.find_all('option')
             lista = []
             for option in options:
-                make = CarMake
-                print(option.text)
-                print(option['value'])
-"""    def parse_html(self, html):
-        soup = BeautifulSoup(html, "html.parser")
-        listings_divs = soup.find_all('div', id=re.compile('^listing_'))
-        for div in listings_divs:
-            data = div.find('h4').get_text().strip().split(' ')
-            price = div.find('span', {'class': 'cg-dealFinder-priceAndMoPayment'})
-            spec_price = price.find_all('span')[0].get_text()
-            car = Car()
-            car.make = data[1]
-            car.year = data[0]
-            car.model = ' '.join(data[2:])
-            car.zip_code = self.zip_code
-            car.save()"""
+                obj, created = CarMake.objects.get_or_create(
+                    key=option['value'],
+                    name=option.text
+                )
+                if not created:
+                    sys.stdout.write("{} already in database \n".format(obj.name))
+                else:
+                    sys.stdout.write("{} was added to the database \n".format(obj.name))
 
+
+class CarModelSpider():
+    base_url = 'https://www.cargurus.com/Cars/getCarPickerReferenceDataAJAX.action'
+    PARAMS = {
+        'forPriceAnalysis':False,
+        'showInactive': False,
+        'newCarsOnly':False,
+        'useInventoryService':True,
+        'quotableCarsOnly':False,
+        'carsWithRegressionOnly':False,
+        'localeCountryCarsOnly':True
+    } 
+    
+    def __init__(self):
+        self.session = requests.Session()
+
+    def start_scraper(self):
+        r = self.session.get(self.base_url, params=self.PARAMS)
+        if r.status_code == 200:
+            data = r.json()['allMakerModels']
+            for keymake, value in data.items():
+                try:
+                    carmake = CarMake.objects.get(key=keymake)
+                except CarMake.DoesNotExist:
+                    continue
+                for statu, make in value.items():
+                    for model in make:
+                        obj, created = CarModel.objects.get_or_create(name=model['modelName'], make=carmake)
+                        if not created:
+                            sys.stdout.write("{} already in database \n".format(obj.name))
+                        else:
+                            sys.stdout.write("{} was added to the database \n".format(obj.name))

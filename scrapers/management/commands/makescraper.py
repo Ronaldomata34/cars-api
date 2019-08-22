@@ -8,3 +8,15 @@ class Command(BaseCommand):
         scraper = CarMakeSpider()
         scraper.start_scraper()
         self.stdout.write(self.style.SUCCESS('Successfully scraped'))
+
+"""https://www.cargurus.com/Cars/getCarPickerReferenceDataAJAX.action?forPriceAnalysis=false&showInactive=false&newCarsOnly=false&useInventoryService=true&quotableCarsOnly=false&carsWithRegressionOnly=false&localeCountryCarsOnly=true"""
+
+PARAMS = {
+    'forPriceAnalysis':False,
+    'showInactive': False,
+    'newCarsOnly':False,
+    'useInventoryService':True,
+    'quotableCarsOnly':False,
+    'carsWithRegressionOnly':False,
+    'localeCountryCarsOnly':True
+    } 

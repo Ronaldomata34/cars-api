@@ -39,9 +39,11 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     'rest_framework',
+    'django_filters',
 
     'cars',
     'scrapers',
+    'home',
 ]
 
 MIDDLEWARE = [
@@ -59,7 +61,9 @@ ROOT_URLCONF = 'cars_app.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [
+            os.path.join(BASE_DIR, 'templates')
+        ],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -71,7 +75,7 @@ TEMPLATES = [
         },
     },
 ]
-
+print(os.path.join(BASE_DIR, 'templates'))
 WSGI_APPLICATION = 'cars_app.wsgi.application'
 
 
@@ -123,3 +127,11 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/2.2/howto/static-files/
 
 STATIC_URL = '/static/'
+# this is the static files folder name which you created in django project root folder. This is different from above STATIC_URL. 
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'statics'),
+]
+
+REST_FRAMEWORK = {
+    'DEFAULT_FILTER_BACKENDS': ['django_filters.rest_framework.DjangoFilterBackend']
+}
